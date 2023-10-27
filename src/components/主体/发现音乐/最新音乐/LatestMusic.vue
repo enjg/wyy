@@ -14,7 +14,7 @@
         {{ songDiscs[1].name }}
       </p>
     </div>
-    <router-view></router-view>
+    <router-view class="router"></router-view>
   </div>
 </template>
 
@@ -44,19 +44,22 @@ function DiscSwitching(NumberTF) {
 <style scoped>
 .zt {
   width: 1070px;
+  
 }
 .song_disc_toggle {
   width: 260px;
   height: 30px;
   border: 1px solid rgb(179, 179, 179);
   border-radius: 10% / 100%;
-  margin: 20px auto 50px auto;
+  margin: 0px auto 0px auto;
 }
 .song_disc_toggle p {
   width: 130px;
   height: 30px;
   /* background-color: pink; */
   float: left;
+  font-size: 14px;
+  font-weight: 300;
   margin: 0;
   text-align: center;
   line-height: 30px;
@@ -68,5 +71,8 @@ function DiscSwitching(NumberTF) {
 .song_disc_toggle_click {
   background-color: rgb(179, 179, 179) !important;
   color: white;
+}
+.router{
+  margin-top: 20px;
 }
 </style>

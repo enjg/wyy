@@ -1227,7 +1227,6 @@ onMounted(() => {
   height: 50px;
 }
 .carousel{
-  margin-top: 20px;
   height: 205px;
 }
 .tjgd {

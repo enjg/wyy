@@ -187,7 +187,11 @@ function formatNumber(number) {
 function jstime(item) {
   const minutes = Math.floor(item / 60000); // 分钟
   const seconds = Math.floor((item % 60000) / 1000); // 秒
-  return `${minutes}:${seconds} `;
+
+  const formattedMinutes = minutes.toString().padStart(2, "0"); // 将分钟数补全为2位
+  const formattedSeconds = seconds.toString().padStart(2, "0"); // 将秒数补全为2位
+  
+  return `${formattedMinutes}:${formattedSeconds}`;
 }
 </script>
 

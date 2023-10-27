@@ -172,7 +172,7 @@ function RouterBoutiquePlaylist() {
   position: relative;
 }
 .jpgd {
-  height: 180px;
+  height: 170px;
   border-radius: 10px;
   background: linear-gradient(
     to right,
@@ -186,19 +186,19 @@ function RouterBoutiquePlaylist() {
 }
 .jpgd_left {
   float: left;
-  width: 180px;
-  height: 180px;
+  width: 170px;
+  height: 170px;
 }
 .jpgd_right {
   float: left;
   padding: 0;
 }
 .jpgd_left > img {
-  width: 150px;
-  height: 150px;
+  width: 140px;
+  height: 140px;
   margin-left: 15px;
   margin-top: 15px;
-  border-radius: 2%;
+  border-radius: 5%;
 }
 .jpgd_name {
   width: 100px;
@@ -211,12 +211,12 @@ function RouterBoutiquePlaylist() {
 .jpgd_name > p {
   line-height: 30px;
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   color: #e7aa5a;
 }
 .jpgd_right > p:nth-of-type(1) {
   color: white;
-  font-size: 18px;
+  font-size: 16px;
 }
 .jpgd_right > p:nth-of-type(2) {
   color: rgb(188, 188, 188);
@@ -227,13 +227,14 @@ function RouterBoutiquePlaylist() {
   height: 70px;
 }
 .gdxz > input {
-  width: 130px;
-  height: 40px;
+  width: 100px;
+  height: 30px;
   margin-top: 15px;
   border-radius: 25px;
-  border: 1px solid rgb(138, 138, 138);
+  border: 1px solid #b2b2b2;
   background-color: white;
   font-size: 18px;
+  font-size: 15px;
 }
 .gdxz > ul {
   float: right;
@@ -249,7 +250,7 @@ function RouterBoutiquePlaylist() {
   color: rgb(76, 76, 76);
 }
 .gdxz span {
-  font-size: 14px;
+  font-size: 12px;
   padding: 2px 10px;
 }
 .playlist-selection {

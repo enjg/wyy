@@ -140,17 +140,20 @@ function tz(a) {
 }
 .content-left > ul {
   margin: 0;
+  padding: 0;
   list-style-type: none;
   text-align: left;
   font-size: 18px;
-  padding-left: 20px;
+  padding-left: 10px;
 }
 .content-left > ul > li {
-  font-size: 16px;
+  font-size: 15px;
+  margin: 0;
+  padding: 0;
   margin-top: 5px;
-  height: 40px;
+  height: 30px;
   font-weight: lighter;
-  line-height: 40px;
+  line-height: 30px;
   color: black;
   padding-left: 10px;
 }
@@ -158,7 +161,7 @@ function tz(a) {
   margin: 0;
   float: left;
   height: 20px;
-  margin-top: 10px;
+  margin-top: 5px;
   margin-right: 10px;
 }
 .content-left > ul > li:hover {

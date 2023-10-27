@@ -8,7 +8,7 @@ export const useLoginStore = defineStore("counter", () => {
         cookie.value=center;
     }
     function postLoginStatus(center){
-        LoginStatus=center;
+        Object.assign(LoginStatus,center)
         console.log(LoginStatus)
     }
     return{

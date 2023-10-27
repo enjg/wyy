@@ -91,21 +91,21 @@ onMounted(() => {
   getComments();
 });
 
-function handlePageChange(currentPage){
-  ReviewPageNumber.value=currentPage;
+function handlePageChange(currentPage) {
+  ReviewPageNumber.value = currentPage;
   console.log(currentPage);
   getComments();
 }
 
-
 function gethotComments() {
-  
+  const timestamps = Date.now();
   axios
     .get("http://47.108.209.241:8090/comment/music", {
       params: {
         id: myStore.state.songurl.id,
         offset: 0,
         limit: 20,
+        timestamp: timestamps,
       },
     })
     .then((response) => {
@@ -117,13 +117,15 @@ function gethotComments() {
       console.error(error);
     });
 }
+const timestamps = Date.now();
 function getComments() {
   axios
     .get("http://47.108.209.241:8090/comment/music", {
       params: {
         id: myStore.state.songurl.id,
-        offset: 20*(ReviewPageNumber.value-1),
+        offset: 20 * (ReviewPageNumber.value - 1),
         limit: 20,
+        timestamp: timestamps,
       },
     })
     .then((response) => {

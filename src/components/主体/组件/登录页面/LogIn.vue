@@ -112,16 +112,15 @@ onBeforeUnmount(() => {
 .login_zt {
   position: relative;
   width: 350px !important;
-  height: 500px !important;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(120, 120, 120, 0.5);
+  height: 470px !important;
 }
 .login_zt h1 {
   font-weight: 300;
   text-align: center;
-  margin-top: 70px;
+  margin-top: 30px;
 }
-.login_zt img {
+
+.login_zt img:nth-of-type(1) {
   position: absolute;
   top: 50%;
   left: 50%;

@@ -25,9 +25,11 @@ import { useMyStore } from "@/pinia/myStore.js";
 import axios from "axios";
 import { watch } from "vue";
 import { ref } from "vue";
+// import { useLoginStore } from "@/pinia/myLogin.js";
 import { useLoginStore } from "@/pinia/myLogin.js";
 
 const myLogin = useLoginStore();
+// const myLogin = useLoginStore();
 
 
 const myStore = useMyStore();
@@ -44,11 +46,13 @@ watch(
 function hqsongurl(id) {
   const timestamps = Date.now();
   axios
-    .get("http://47.108.209.241:8090/song/url", {
+    .get("http://47.108.209.241:8090/song/url/v1", {
       params: {
         id: id,
+        level:"standard",
+        cookie:myLogin.cookie,
         timestamp:timestamps,
-        cookie:myLogin.cookie
+
       },
     })
     .then((response) => {

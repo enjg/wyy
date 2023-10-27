@@ -5,7 +5,7 @@
         <img :src="gdxqlb.playlist.coverImgUrl" alt="" />
       </div>
       <div class="gdxq_right">
-        <h3>{{ gdxqlb.playlist.name }}</h3>
+        <p>{{ gdxqlb.playlist.name }}</p>
         <div class="yhxx">
           <img :src="gdxqlb.playlist.creator.avatarUrl" alt="" />&nbsp;
           <p>&nbsp;&nbsp;{{ gdxqlb.playlist.creator.nickname }}</p>
@@ -18,7 +18,7 @@
           <input type="button" value="下载全部" />
         </div>
 
-        <div class="bq" v-if="gdxqlb.playlist.tags">
+        <div class="bq" v-if="gdxqlb.playlist.tags.length>0">
           <span>标题：</span>
           <span v-for="(item, index) in gdxqlb.playlist.tags" :key="index">
             {{ item }}/
@@ -29,7 +29,7 @@
           <span>歌曲：</span>
           <span>{{ gdxqlb.playlist.trackCount }}</span>&nbsp;&nbsp;
           <span>播放：</span>
-          <span>{{ gdxqlb.playlist.playCount }}</span>
+          <span>{{ formatNumber(gdxqlb.playlist.playCount )}}</span>
         </div>
 
         <div class="jj" v-if="gdxqlb.playlist.description">
@@ -47,7 +47,7 @@
         <li @click="tzlb(3)">收藏</li>
       </ul>
     </div>
-    <SongList :message="trackIds" v-if="xz === 1"></SongList>
+    <SongList :message="paramA" v-if="xz === 1"></SongList>
   </div>
 </template>
   
@@ -99,47 +99,58 @@ function formatTimestampToDate(timestamp) {
 
   return `${year}-${month}-${day}`;
 }
+function formatNumber(number) {
+  if (number >= 100000000) {
+    return Math.floor(number / 100000000) + "亿";
+  } else if (number >= 100000 && number < 100000000) {
+    return Math.floor(number / 10000) + "万";
+  } else {
+    return number.toString();
+  }
+}
 </script>
   
   <style scoped>
 .zt {
   width: 1170px !important;
-  padding-top: 40px;
+  padding-top: 20px;
 }
 .gdxq {
   width: 1170px;
-  height: 220px;
+  height: 190px;
 }
 .gdxq_left {
   float: left;
-  height: 220px;
-  width: 220px;
+  height: 190px;
+  width: 190px;
 }
 .gdxq_left > img {
   border-radius: 5px;
-  height: 220px;
-  width: 220px;
+  height: 190px;
+  width: 190px;
 }
 .gdxq_right {
   float: left;
-  width: 930px;
-  height: 220px;
+  width: 940px;
+  height: 190px;
   padding: 0;
   overflow: hidden;
   margin-left: 20px;
 }
-.gdxq_right > h3 {
+.gdxq_right > p {
   margin: 0;
+  font-size: 22px;
+  font-weight: bold;
 }
 
 input[type="button"] {
-  width: 150px;
-  height: 35px;
+  padding: 0 20px;
+  height: 30px;
   background-color: white;
   border-radius: 20px;
-  margin-right: 20px;
-  border: 1px solid rgb(91, 91, 91);
-  font-size: 18px;
+  margin-right: 10px;
+  border: 1px solid #b2b2b2;
+  font-size: 16px;
 }
 input[type="button"]:nth-of-type(1) {
   background-color: red;
@@ -155,8 +166,8 @@ p {
 }
 .gdplsc {
   width: 1170px;
-  height: 50px;
-  margin-top: 50px;
+  height: 30px;
+  margin-top: 20px;
 }
 .gdplsc > ul {
   list-style-type: none;
@@ -164,24 +175,35 @@ p {
 }
 .gdplsc > ul > li {
   float: left;
-  font-size: 20px;
-  line-height: 50px;
+  font-size: 18px;
+  line-height: 30px;
   margin-left: 20px;
+  font-weight: 300;
 }
 .yhxx{
-  height: 30px;
+  height: 25px;
   width: 100%;
 }
 .yhxx>img{
-  width: 30px;
+  width: 25px;
   float: left;
   border-radius: 50%;
 }
 .yhxx>p{
   float: left;
-  height: 30px;
-  line-height: 30px;
+  height: 25px;
+  line-height: 25px;
   margin: 0;
 }
-
+.yhxx>p:nth-of-type(1){
+  color: #6b8fb8;
+}
+.gqbf>span{
+  font-size: 13px;
+  font-weight: 300;
+}
+.jj>span{
+  font-size: 13px;
+  font-weight: 300;
+}
 </style>

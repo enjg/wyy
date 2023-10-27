@@ -2,7 +2,12 @@
   <div class="zt">
     <div class="top">
       <ul>
-        <li v-for="item in sjarray" :key="item.index" @click="tz(item)" :class="{click:item.name==name}">
+        <li
+          v-for="item in sjarray"
+          :key="item.index"
+          @click="tz(item)"
+          :class="{ click: item.name == name }"
+        >
           {{ item.name }}
         </li>
       </ul>
@@ -15,7 +20,7 @@
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 
-let name=ref("个性推荐")
+let name = ref("个性推荐");
 const router = useRouter();
 const sjarray = reactive([
   {
@@ -30,43 +35,46 @@ const sjarray = reactive([
   {
     id: 3,
     name: "歌单",
-    link:"/index/discover_music/song_list"
+    link: "/index/discover_music/song_list",
   },
   {
     id: 4,
     name: "排行榜",
-    link:"/index/discover_music/leader_board"
+    link: "/index/discover_music/leader_board",
   },
   {
     id: 5,
     name: "歌手",
-    link:"/index/discover_music/singer_module"
+    link: "/index/discover_music/singer_module",
   },
   {
     id: 6,
     name: "最新音乐",
-    link:"/index/discover_music/latest_music"
+    link: "/index/discover_music/latest_music",
   },
 ]);
 
 function tz(a) {
   router.push(a.link);
-  name.value=a.name;
+  name.value = a.name;
 }
 </script>
 
 <style scoped>
-.zt{
+.zt {
   display: inline-block; /* 或者 display: inline; */
   width: auto;
   margin: auto;
 }
 .top {
   height: 50px;
-  width: 100%;
-
+  width: 1070px;
+  /* position: fixed;
+  left: calc(50% - (0.5 * (100vw - 100%) + 400px));
+  top: calc(100vh - 00px);
+  z-index: 99999999; */
 }
-.click{
+.click {
   font-weight: bold !important;
   font-size: 20px !important;
   border-bottom: 4px solid red;
@@ -85,7 +93,7 @@ function tz(a) {
   margin-right: 20px;
   font-weight: 300;
 }
-.router-view-class{
+.router-view-class {
   margin-top: 20px;
 }
 </style>

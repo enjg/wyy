@@ -1,5 +1,5 @@
 <template>
-  <div class="zt" v-if="top50.length>0">
+  <div class="zt" v-if="top50.length > 0">
     <div class="top50">
       <div class="top50left">
         <img src="../../../../assets/image/top50.jpg" alt="" />
@@ -15,9 +15,17 @@
             >
               <td>{{ key + 1 }}</td>
               <td><img src="../../../../assets/image/喜欢.png" alt="" /></td>
-              <td><img src="../../../../assets/image/chongzhi.png" alt="" /></td>
               <td>
-                {{ item.name }}<span v-if="item.tns">({{ item.tns[0] }})</span>
+                <img src="../../../../assets/image/chongzhi.png" alt="" />
+              </td>
+              <td>
+                <p>{{ item.name }}</p>
+                <p v-if="item.tns">({{ item.tns[0] }})</p>
+                <p v-if="item.fee == 1" class="mv vip">VIP</p>
+                <p v-if="item.fee == 1" class="mv">试听</p>
+                <p v-if="item.sq !== null && item.hr == null" class="mv">SQ</p>
+                <p v-if="item.hr !== null" class="mv">Hi-Res</p>
+                <p v-if="item.mv !== 0" class="mv">MV</p>
               </td>
               <td>{{ jstime(item.dt) }}</td>
             </tr>
@@ -48,7 +56,7 @@ const myStore = useMyStore();
 let mySinger = useMysinger();
 let top50 = reactive([]);
 let albumList = reactive([]);
-let center=ref(null);
+let center = ref(null);
 onMounted(() => {
   gettop50();
   getAlbumList();
@@ -98,7 +106,11 @@ function songplay(center) {
 function jstime(item) {
   const minutes = Math.floor(item / 60000); // 分钟
   const seconds = Math.floor((item % 60000) / 1000); // 秒
-  return `${minutes} . ${seconds} `;
+
+  const formattedMinutes = minutes.toString().padStart(2, "0"); // 将分钟数补全为2位
+  const formattedSeconds = seconds.toString().padStart(2, "0"); // 将秒数补全为2位
+
+  return `${formattedMinutes}:${formattedSeconds}`;
 }
 function getlistall() {
   console.log(topDiv.value);
@@ -107,20 +119,20 @@ function getlistall() {
   formDiv.style.height = "auto";
   inputDiv.style.display = "none";
 }
-let offset=1;
+let offset = 1;
 function getAlbumList() {
   axios
     .get("http://47.108.209.241:8090/artist/album", {
       params: {
         id: mySinger.id,
         limit: 5,
-        offset:(offset-1)*5
+        offset: (offset - 1) * 5,
       },
     })
     .then((response) => {
-      if(offset==1){
+      if (offset == 1) {
         Object.assign(albumList, response.data.hotAlbums);
-      }else{
+      } else {
         albumList.push(...response.data.hotAlbums);
       }
       offset++;
@@ -148,6 +160,24 @@ function handleScroll() {
 </script>
 
 <style scoped>
+td>p{
+  margin: 0;
+  float: left;
+  line-height: 35px;
+}
+.mv {
+  box-sizing: border-box;
+  font-size: 10px;
+  border: 1px solid #fd544e;
+  line-height: 13px;
+  margin: 10px 3px;
+  padding: 0 2px;
+  color: #fd544e;
+  border-radius: 2px;
+}
+.vip {
+  color: #fd8558;
+}
 .top50left {
   float: left;
   width: 180px;
@@ -186,6 +216,8 @@ td {
   text-align: center;
   height: 35px;
   color: rgb(142, 142, 142);
+  font-size: 13px;
+
 }
 tr td:nth-child(1) {
   width: 30px;
@@ -199,16 +231,17 @@ tr td:nth-child(3) {
   width: 30px;
 }
 tr td:nth-child(4) {
-  font-size: 10px;
   width: 700px;
   text-align: left;
   color: black;
   padding-left: 10px;
+  font-weight: 300;
 }
 tr td:nth-child(5) {
   width: 140px;
   text-align: left;
 }
+
 tr {
   background-color: rgb(245, 245, 245);
 }
@@ -233,7 +266,7 @@ tr:hover {
 .top50right input:hover {
   color: black;
 }
-.center>*{
+.center > * {
   margin: 20px 0;
 }
 </style>

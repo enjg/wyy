@@ -52,13 +52,16 @@ function getListOfNewSongs(name,type) {
 </script>
   
   <style scoped>
-  .discography{
-    margin: 20px 0;
-  }
+.discography {
+  width: 1070px;
+  display: inline-block;
+  margin: 20px 0;
+}
 .discography span {
   margin-right: 20px;
   font-size: 16px;
   font-weight: 300;
+  line-height: 30px;
 }
 .discography_span_click {
   color: black !important;

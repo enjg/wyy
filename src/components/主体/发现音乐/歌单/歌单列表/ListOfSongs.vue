@@ -4,7 +4,7 @@
       <img :src="item.coverImgUrl" alt="" />
       <div>
         <p><img src="./bfq.png" alt="" /></p>
-        <p>{{ item.playCount }}</p>
+        <p>{{ formatNumber(item.playCount) }}</p>
       </div>
       <p>{{ item.name }}</p>
     </div>
@@ -55,7 +55,15 @@ function tzgd(a){
     console.log(a);
     router.push({ path: '/index/playlist_details', query: { paramA: a } });
 }
-
+function formatNumber(number) {
+  if (number >= 100000000) {
+    return Math.floor(number / 100000000) + "亿";
+  } else if (number >= 100000 && number < 100000000) {
+    return Math.floor(number / 10000) + "万";
+  } else {
+    return number.toString();
+  }
+}
 
 </script>
 
@@ -64,9 +72,15 @@ function tzgd(a){
   width: 100%;
   
 }
+.gd:nth-of-type(5n){
+  margin-right: 0;
+}
+.gd:nth-of-type(5n-4){
+  margin-left: 0;
+}
 .gd {
   float: left;
-  width: 194px;
+  width: 198px;
   height: 250px;
   margin: 10px;
   position: relative;
@@ -78,21 +92,26 @@ function tzgd(a){
 .gd > p{
   font-size: 14px;
   margin: 0;
+  font-weight: 300;
   height: 50px;
 }
 .gd > div {
   z-index: 999;
   position: absolute;
-  top: 0px;
-  right: 0;
+  top: 5px;
+  right: 5px;
   color: white;
   padding: 0;
 }
 .gd > div p {
   float: left;
   margin: 0;
+  font-size: 12px;
+  line-height: 15px;
 }
 .gd > div img {
-  width: 20px;
+  height: 15px;
+  width: 15px;
+  margin-right: 5px;
 }
 </style>
