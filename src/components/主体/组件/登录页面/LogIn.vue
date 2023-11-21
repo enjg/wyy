@@ -1,5 +1,6 @@
 <template>
   <div class="login_zt">
+    <img src="./img/差号.png" alt="" @click="clickgb()" />
     <h1>扫码登录</h1>
     <img :src="image" alt="" />
   </div>
@@ -11,7 +12,6 @@ import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useLoginStore } from "@/pinia/myLogin.js";
 
 const myLogin = useLoginStore();
-
 
 var intervalId;
 onMounted(() => {
@@ -26,6 +26,9 @@ onMounted(() => {
 });
 let image = ref("");
 let key = ref("");
+function clickgb() {
+  myLogin.LogInTF = 0;
+}
 function getLogInKey() {
   let time = Date.now();
   axios
@@ -87,13 +90,13 @@ function getLogInCheck() {
     });
 }
 function getLoginStatus(abc) {
-  console.log(abc)
+  console.log(abc);
   let time = Date.now();
   axios
     .get("http://47.108.209.241:8090/login/status", {
       params: {
         timestamp: time,
-        cookie:abc
+        cookie: abc,
       },
     })
     .then((res) => {
@@ -110,17 +113,29 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .login_zt {
-  position: relative;
   width: 350px !important;
-  height: 470px !important;
+  height: 530px !important;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(120, 120, 120, 0.5);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99999999999999;
 }
 .login_zt h1 {
   font-weight: 300;
   text-align: center;
-  margin-top: 30px;
+  margin-top: 100px;
 }
 
 .login_zt img:nth-of-type(1) {
+  width: 15px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.login_zt img:nth-of-type(2) {
   position: absolute;
   top: 50%;
   left: 50%;

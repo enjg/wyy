@@ -5,13 +5,13 @@
         <img src="../../../../assets/image/top50.jpg" alt="" />
       </div>
       <div class="top50right" ref="topDiv">
-        <h2>热门50首</h2>
+        <p>热门50首</p>
         <form action="">
           <tbody>
             <tr
               v-for="(item, key) in top50"
               :key="item.id"
-              @click="songplay(item)"
+              @click="songplay(top50, key)"
             >
               <td>{{ key + 1 }}</td>
               <td><img src="../../../../assets/image/喜欢.png" alt="" /></td>
@@ -48,11 +48,11 @@
 import { onMounted, reactive, ref } from "vue";
 import { useMysinger } from "@/pinia/myStore.js";
 import axios from "axios";
-import { useMyStore } from "@/pinia/myStore.js";
 import AlbumS from "./专辑组件/AlbumS.vue";
+import { useMyPlaylist } from "@/pinia/myPlaylist.js";
 
+const myPlaylist = useMyPlaylist();
 let topDiv = ref(null);
-const myStore = useMyStore();
 let mySinger = useMysinger();
 let top50 = reactive([]);
 let albumList = reactive([]);
@@ -76,32 +76,11 @@ function gettop50() {
       console.error(error);
     });
 }
-function songplay(center) {
-  console.log(center);
-  // const url="";
-  // axios
-  //   .get(
-  //     "http://47.108.209.241:8090/song/url",
-  //     {
-  //       params: {
-  //         id: center.id,
-  //       },
-  //     }
-  //   )
-  //   .then((response) => {
-  //     console.log(response.data.data);
-  //     url=response.data.data.url;
-  //   })
-  //   .catch((error) => {
-  //     console.error(error);
-  //   });
-  const songobj = {
-    id: center.id,
-    img: center.al.picUrl,
-    name: center.ar[0].name,
-    songname: center.name,
-  };
-  myStore.setMessage(songobj);
+function songplay(array, index) {
+  console.log(index)
+  myPlaylist.postPlaylistArray(array);
+  myPlaylist.PlaylistIndex(index);
+
 }
 function jstime(item) {
   const minutes = Math.floor(item / 60000); // 分钟
@@ -160,7 +139,9 @@ function handleScroll() {
 </script>
 
 <style scoped>
-td>p{
+.zt {
+}
+td > p {
   margin: 0;
   float: left;
   line-height: 35px;
@@ -180,20 +161,27 @@ td>p{
 }
 .top50left {
   float: left;
-  width: 180px;
+  width: 145px;
 }
 .top50left img {
-  width: 180px;
-  height: 180px;
+  width: 145px;
+  height: 145px;
   border-radius: 5px;
 }
 .top50right {
   float: left;
-  width: 930px;
+  width: calc(100% - 205px);
   margin-left: 60px;
 }
+.top50right > p {
+  margin: 0px;
+  font-size: 18px;
+  font-weight: bold;
+}
 form {
+  margin-top: 10px;
   height: 350px;
+  width: 100%;
   overflow: hidden;
 }
 td {
@@ -204,9 +192,7 @@ tr {
   border: none;
   padding: 0;
 }
-.top50right > h2 {
-  margin: 5px 0px;
-}
+
 td > img {
   width: 20px;
   height: 20px;
@@ -217,7 +203,6 @@ td {
   height: 35px;
   color: rgb(142, 142, 142);
   font-size: 13px;
-
 }
 tr td:nth-child(1) {
   width: 30px;
@@ -231,7 +216,7 @@ tr td:nth-child(3) {
   width: 30px;
 }
 tr td:nth-child(4) {
-  width: 700px;
+  width: 735px;
   text-align: left;
   color: black;
   padding-left: 10px;

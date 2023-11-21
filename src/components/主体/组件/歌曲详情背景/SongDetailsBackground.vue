@@ -1,5 +1,6 @@
 <template>
   <div class="zt">
+    <div class="divbac"></div>
     <div class="conter">
       <div class="conter-song-left">
         <img
@@ -10,15 +11,31 @@
         <div>
           <img
             :class="[state.songBackdrop.playbacktf ? 'cpt' : 'cpf']"
-            :src="myStore.state.songurl.img"
+            :src="myPlaylist.playlistContent[0].al.picUrl"
             alt=""
           />
         </div>
       </div>
       <div class="conter-song-right">
         <div class="conter-song-right-top">
-          <h2>{{ myStore.state.songurl.name }}</h2>
-          <p>歌手：{{ myStore.state.songurl.songname }}</p>
+          <p>{{ myPlaylist.playlistContent[0].name }}</p>
+          <div>
+            <div>
+              <div
+                v-for="(item, index) in myPlaylist.playlistContent[0].ar"
+                :key="index"
+              >
+                <p>{{ item.name }}</p>
+                <p v-if="index !== myPlaylist.playlistContent[0].ar.length - 1">
+                  &nbsp;/&nbsp;
+                </p>
+              </div>
+            </div>
+            <div>
+              <p>专辑：{{ myPlaylist.playlistContent[0].al.name }}</p>
+            </div>
+          </div>
+          <!-- <p>歌手：{{ myStore.state.songurl.songname }}</p> -->
         </div>
         <div ref="myDiv" v-show="gec" class="conter-song-right-conter">
           <div>
@@ -28,25 +45,73 @@
       </div>
     </div>
     <div class="song-review">
-      <song-review></song-review>
+      <div class="song-review-left">
+        <SongReview :message="querObj"></SongReview>
+      </div>
+      <div class="song-review-right">
+        <div class="songList">
+          <div class="bt">
+            <p>包含这首歌的歌单</p>
+          </div>
+          <div
+            class="content"
+            v-for="(item, index) in SimiPlaylistArray"
+            :key="index"
+          >
+            <div class="content_left">
+              <img :src="item.coverImgUrl" alt="" />
+            </div>
+            <div class="content_right">
+              <p>{{ item.name }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="recommendedSong">
+          <div class="bt">
+            <p>喜欢这首歌的人也听</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
-import { useMyStore, useMySong } from "@/pinia/myStore.js";
-import { reactive, ref, computed, onBeforeMount, watch} from "vue";
+import { useMySong } from "@/pinia/myStore.js";
+import { reactive, ref, computed, watch, onMounted } from "vue";
 import SongReview from "../歌曲评论/SongReview.vue";
+import { useMyPlaylist } from "@/pinia/myPlaylist.js";
+
+const myPlaylist = useMyPlaylist();
 const { state } = useMySong();
-const myStore = useMyStore();
 const LyricInformation = reactive({});
 const gec = ref("");
-
-onBeforeMount(() => {
-  songgc();
+let querObj = reactive({
+  id: myPlaylist.playlistContent[0].id,
+  typeof: 0,
+  pageSize: 20,
 });
-
+watch(
+  () => querObj,
+  () => {
+    console.log("hj");
+  },
+  { deep: true }
+);
+onMounted(() => {
+  songgc(myPlaylist.playlistContent[0].id);
+  getSimiPlaylist(myPlaylist.playlistContent[0].id);
+});
+watch(
+  () => myPlaylist.playlistContent,
+  () => {
+    songgc(myPlaylist.playlistContent[0].id);
+    getSimiPlaylist(myPlaylist.playlistContent[0].id);
+    querObj.id = myPlaylist.playlistContent[0].id;
+  },
+  { deep: true }
+);
 const lyricsArray = computed(() => {
   const lines = gec.value ? gec.value.split("\n") : [];
   const lyricRegex = /\[(.*?)\]/; // 歌词正则表达式，匹配 [] 之间的内容
@@ -58,18 +123,15 @@ const lyricsArray = computed(() => {
   });
 });
 
-function songgc() {
-  const timestamp = Date.now(); 
+function songgc(id) {
+  const timestamp = Date.now();
   axios
-    .get(
-      "http://47.108.209.241:8090/lyric",
-      {
-        params: {
-          id: state.songBackdrop.id,
-          timestamp:timestamp,
-        },
-      }
-    )
+    .get("http://47.108.209.241:8090/lyric", {
+      params: {
+        id: id,
+        timestamp: timestamp,
+      },
+    })
     .then((response) => {
       Object.assign(LyricInformation, response.data);
       gec.value = response.data.lrc.lyric;
@@ -81,7 +143,7 @@ function songgc() {
 let myDiv = ref(null);
 function dj(b) {
   if (myDiv.value !== null && myDiv.value && myDiv.value.classList) {
-    const targetScroll = 0 + b * 50; // 滚动距离为当前位置加50个像素
+    const targetScroll = 0 + b * 35; // 滚动距离为当前位置加50个像素
 
     const duration = 200; // 滚动持续时间（毫秒）
     const startTime = performance.now();
@@ -178,79 +240,129 @@ function isTime1LessThanTime2(time1, time2) {
     parseInt(ms2 || 0);
   return totalMs1 > totalMs2;
 }
-
-
+let SimiPlaylistArray = reactive([]);
+function getSimiPlaylist(id) {
+  const timestamp = Date.now();
+  axios
+    .get("http://47.108.209.241:8090/simi/playlist", {
+      params: {
+        id: id,
+        timestamp: timestamp,
+      },
+    })
+    .then((response) => {
+      Object.assign(SimiPlaylistArray, response.data.playlists);
+      console.log(111, response.data.playlists);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
 </script>
 
 <style scoped>
-.zt{
+.zt {
   width: 100%;
-  overflow: hidden;
+  display: inline-block;
+  /* background: linear-gradient(to bottom, #dbddde, white); */
+  /* background-color: aquamarine; */
+}
+.divbac {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  z-index: -1;
   background: linear-gradient(to bottom, #dbddde, white);
-  padding-bottom: 150px;
 }
 .scroll-container {
   height: 200px; /* 设置容器的高度，控制显示区域的大小 */
   overflow: auto; /* 设置溢出属性为自动，使内容超出容器高度时出现滚动条 */
 }
 .conter {
-  width: 1000px;
-  height: 500px;
+  width: 870px;
+  height: 430px;
   margin: auto;
   margin-top: 50px;
+  /* background-color: red; */
 }
 .conter-song-right {
   float: right;
-  width: 400px;
-  height: 500px;
+  width: 350px;
+  height: 430px;
 }
 .conter-song-right-conter {
   /* padding-top: 210px; */
-  height: 420px;
+  margin-top: px;
+  height: 330px;
   overflow: hidden;
 }
 .conter-song-right-conter p {
-  height: 30px;
-  margin-top: 20px;
+  margin: 0;
+  height: 25px;
+  margin-top: 10px;
+  font-weight: 300;
+  font-size: 14px;
+  color: #5c5c5e;
 }
 .conter-song-right-conter > div {
-  margin-top: 210px;
-  margin-bottom: 210px;
+  margin-top: 180px;
+  margin-bottom: 150px;
 }
 .conter-song-right-conter:hover {
   overflow: auto;
 }
 .conter-song-right-top {
-  height: 80px;
+  height: 100px;
 }
-.conter-song-right-top h2 {
+.conter-song-right-top > p:nth-of-type(1) {
   margin: 0;
+  font-size: 23px;
+  color: black;
 }
-.conter-song-right-top p {
+.conter-song-right-top > div > div {
+  float: left;
+  width: 95px;
+  height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 20px;
+}
+.conter-song-right-top > div > div p {
+  float: left;
+  height: 20px;
+  line-height: 20px;
+  margin: 0;
+  font-size: 13px;
+  color: #808185;
+}
+/* .conter-song-right-top p {
   font-size: 12px;
   margin-top: 0px;
-}
+} */
 .conter-song-left {
   float: left;
-  width: 600px;
-  height: 500px;
+  height: 430px;
+  width: 450px;
   position: relative;
 }
 .conter-song-left > div {
-  width: 350px;
-  height: 350px;
+  width: 300px;
+  height: 300px;
   position: absolute;
   left: 50%;
-  top: calc(50% + 50px);  transform: translate(-50%, -50%);
+  top: calc(430px - 330px);
+  transform: translateX(-50%);
   border-radius: 50%;
   background-color: black;
   border: 15px solid rgb(170, 170, 170);
 }
 
 .conter-song-left > div > img {
-  width: 260px;
-  height: 260px;
-  margin: 45px;
+  width: 220px;
+  height: 220px;
+  margin: 40px;
   border-radius: 50%;
   animation: rotate 50s infinite linear;
 }
@@ -269,7 +381,7 @@ function isTime1LessThanTime2(time1, time2) {
   animation-play-state: paused;
 }
 .conter-song-left > img {
-  width: 200px;
+  width: 180px;
   position: absolute;
   left: 50%;
   top: 0;
@@ -303,13 +415,62 @@ p {
 }
 
 .Lyric-highlighting {
-  color: black;
-  font-size: 20px;
-  font-weight: bold;
+  color: black !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
 }
-.song-review{
-  width: 1000px;
+.song-review {
+  width: 870px;
   margin: auto;
   margin-top: 100px;
+  background-color: pink;
+}
+.song-review-left {
+  float: left;
+  width: 550px;
+}
+.song-review-right {
+  float: left;
+  margin-left: 70px;
+  width: 250px;
+}
+.bt > p {
+  color: black;
+  margin: 0;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 30px;
+}
+.content {
+  width: 100%;
+  height: 35px;
+  margin: 10px 0;
+}
+.content > div {
+  float: left;
+}
+.content_left {
+  width: 35px;
+  height: 35px;
+}
+.content_left > img {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  margin: 2.5px;
+}
+.content_right {
+  width: calc(100% - 45px);
+  margin-left: 10px;
+  height: 35px;
+}
+.content_right > p {
+  margin: 0;
+  line-height: 35px;
+  height: 35px;
+  font-size: 12px;
+  font-weight: 300;
+  overflow: hidden;
+  color: black;
 }
 </style>

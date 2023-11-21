@@ -1,233 +1,536 @@
 <template>
-  <div class="song-review">
-    <div class="song-review-left">
-      <div class="hotComments" v-if="ReviewPageNumber === 1">
-        <h3>全部评论({{ NumberOfComments }})</h3>
+  <div class="review">
+    <div class="comment_box">
+      <div class="loader" v-show="jzdh === 1"></div>
+
+      <div
+        class="ExcellentComment"
+        v-if="pages === 1 && ExcellentComment.length !== 0"
+      >
+        <div class="ExcellentComment_bt">
+          <p>精彩评论</p>
+        </div>
         <div
-          class="hotComments-comments"
-          v-for="item in hotComments"
-          :key="item.commentId"
+          class="ExcellentComment_center"
+          v-for="(item, index) in ExcellentComment"
+          :key="index"
         >
-          <div class="hotComment-imgleft">
+          <div class="ExcellentComment_center_left">
             <img :src="item.user.avatarUrl" alt="" />
           </div>
-          <div class="hotComment-right">
-            <p>
-              <span>{{ item.user.nickname }}：</span>{{ item.content }}
-            </p>
-            <p
-              v-if="
-                item.beReplied &&
-                item.beReplied[0] &&
-                item.beReplied[0].user &&
-                item.beReplied[0].user.nickname
-              "
-              class="hf"
+          <div class="ExcellentComment_center_right">
+            <div class="ExcellentComment_center_right_content">
+              <span>{{ item.user.nickname }}</span>
+              <img
+                v-if="item.user.vipRights !== null"
+                :src="getIconUrl(item.user.vipRights)"
+                alt=""
+              />
+              ：<span>{{ item.content }}</span>
+            </div>
+            <div
+              class="ReplyComment"
+              v-if="item.beReplied && item.beReplied.length > 0"
             >
-              <span>@{{ item.beReplied[0].user.nickname }}：</span>
-              {{ item.beReplied[0].content }}
-            </p>
-            <p>{{ datatime(item.timeStr) }} {{ time(item.time) }}</p>
+              <span>{{ item.beReplied[0].user.nickname }}：</span>
+              <span>{{ item.beReplied[0].content }}</span>
+            </div>
+            <div class="ExcellentComment_center_right_function">
+              <div class="ExcellentComment_center_right_function_time">
+                <p v-if="item.timeStr">{{ formatDate(item.timeStr) }}</p>
+                <p>{{ getTimeFromTimestamp(item.time) }}</p>
+              </div>
+              <div class="ExcellentComment_center_right_function_button">
+                <ul>
+                  <li>
+                    <img src="../../../../assets//image/赞.png" alt="" />
+                    <p>{{ item.likedCount }}</p>
+                  </li>
+                  <li>
+                    <img src="../../../../assets/image/分享.png" alt="" />
+                  </li>
+                  <li>
+                    <img src="../../../../assets/image/评论.png" alt="" />
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
+        <div class="More_excellent_reviews">
+          <input type="button" value="更多精彩评论" />
+        </div>
       </div>
-      <div class="Comments">
-        <h3>最新评论({{ NumberOfComments }})</h3>
+      <div
+        class="ExcellentComment"
+        v-if="jzdh === 0 && ExcellentCommentAll.length !== 0"
+      >
+        <div class="ExcellentComment_bt">
+          <p>最新评论{{ ArrayLength }}</p>
+        </div>
         <div
-          class="hotComments-comments"
-          v-for="item in Comments"
-          :key="item.commentId"
+          class="ExcellentComment_center"
+          v-for="(item, index) in ExcellentCommentAll"
+          :key="index"
         >
-          <div class="hotComment-imgleft">
+          <div class="ExcellentComment_center_left">
             <img :src="item.user.avatarUrl" alt="" />
           </div>
-          <div class="hotComment-right">
-            <p>
-              <span>{{ item.user.nickname }}：</span>{{ item.content }}
-            </p>
-            <p
-              v-if="
-                item.beReplied &&
-                item.beReplied[0] &&
-                item.beReplied[0].user &&
-                item.beReplied[0].user.nickname
-              "
-              class="hf"
+          <div class="ExcellentComment_center_right">
+            <div class="ExcellentComment_center_right_content">
+              <span>{{ item.user.nickname }}</span>
+              <img
+                v-if="item.user.vipRights !== null"
+                :src="getIconUrl(item.user.vipRights)"
+                alt=""
+              />
+              ：<span>{{ item.content }}</span>
+            </div>
+            <div
+              class="ReplyComment"
+              v-if="item.beReplied && item.beReplied.length > 0"
             >
-              <span>@{{ item.beReplied[0].user.nickname }}：</span>
-              {{ item.beReplied[0].content }}
-            </p>
-            <p>{{ datatime(item.timeStr) }} {{ time(item.time) }}</p>
+              <span>{{ item.beReplied[0].user.nickname }}：</span>
+              <span>{{ item.beReplied[0].content }}</span>
+            </div>
+            <div class="ExcellentComment_center_right_function">
+              <div class="ExcellentComment_center_right_function_time">
+                <p v-if="item.timeStr">{{ item.timeStr }}</p>
+                <p>{{ getTimeFromTimestamp(item.time) }}</p>
+              </div>
+              <div class="ExcellentComment_center_right_function_button">
+                <ul>
+                  <li>
+                    <img src="../../../../assets//image/赞.png" alt="" />
+                    <p>{{ item.likedCount }}</p>
+                  </li>
+                  <li>
+                    <img src="../../../../assets/image/分享.png" alt="" />
+                  </li>
+                  <li>
+                    <img src="../../../../assets/image/评论.png" alt="" />
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="paging">
-        <el-pagination
-          :page-size="20"
-          :pager-count="10"
-          layout="prev, prev-btn, pager, next-btn, next"
-          :total="NumberOfComments"
-          class="el-pagination"
-          @current-change="handlePageChange"
-        />
+        <div class="paging" v-if="ArrayLength > Props.message.pageSize">
+          <el-pagination
+            :page-size="Props.message.pageSize"
+            :pager-count="9"
+            layout="prev, prev-btn, pager, next"
+            :total="ArrayLength"
+            class="el-pagination"
+            @current-change="handlePageChange"
+          />
+        </div>
       </div>
     </div>
-    <div class="song-review-right"></div>
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
-import { useMyStore } from "@/pinia/myStore.js";
-import { onMounted, reactive, ref } from "vue";
-const myStore = useMyStore();
-let hotComments = reactive([]);
-let Comments = reactive([]);
-let ReviewPageNumber = ref(1);
-let NumberOfComments = ref(0);
+import { onMounted, reactive, defineProps, ref, watch } from "vue";
+// import { useRouter } from "vue-router";
 
-onMounted(() => {
-  gethotComments();
-  getComments();
+// const router = useRouter();
+const Props = defineProps({
+  message: Object,
 });
-
-function handlePageChange(currentPage) {
-  ReviewPageNumber.value = currentPage;
-  console.log(currentPage);
-  getComments();
+onMounted(() => {
+  getMvComment(Props.message);
+  getMvCommentAll(Props.message, 1, tiems.value);
+});
+watch(
+  () => Props.message,
+  () => {
+    getMvComment(Props.message);
+    getMvCommentAll(Props.message, 1, tiems.value);
+  },
+  { deep: true }
+);
+let ExcellentComment = reactive([]);
+let pages = ref(1);
+function handlePageChange(page) {
+  pages.value = page;
 }
+watch(
+  () => pages.value,
+  (newValue, oldValue) => {
+    console.log(newValue, oldValue);
+    if (newValue > 1) {
+      // if (newValue > oldValue) {
+      //   if (newValue - oldValue > 1) {
+      //     getTime(
+      //       Props.message,
+      //       (newValue - oldValue - 1) *20,
+      //       newValue,
+      //       tiems.value
+      //     );
+      //   } else {
+      //     getMvCommentAll(Props.message, newValue, tiems.value);
+      //   }
+      // } else {
+      //   getTime(Props.message, (newValue - 1) * 20, newValue, tiems.value);
+      // }
+      getTime(Props.message, (newValue - 1) * 20, newValue, tiems.value);
+    } else {
+      getMvCommentAll(Props.message, newValue, null);
+    }
+  }
+);
+let jzdh = ref(0);
 
-function gethotComments() {
-  const timestamps = Date.now();
+function getMvComment(center) {
+  console.log(center);
+  let time = Date.now();
   axios
-    .get("http://47.108.209.241:8090/comment/music", {
+    .get("http://47.108.209.241:8090/comment/hot", {
       params: {
-        id: myStore.state.songurl.id,
-        offset: 0,
-        limit: 20,
-        timestamp: timestamps,
+        timestamp: time,
+        id: center.id,
+        type: center.typeof,
+        limit: 10,
       },
     })
-    .then((response) => {
-      Object.assign(hotComments, response.data.hotComments);
-      NumberOfComments.value = response.data.total;
-      console.log(response.data.hotComments);
+    .then((res) => {
+      Object.assign(ExcellentComment, res.data.hotComments);
     })
-    .catch((error) => {
-      console.error(error);
+    .catch((err) => {
+      console.error(err);
     });
 }
-const timestamps = Date.now();
-function getComments() {
+let ExcellentCommentAll = reactive([]);
+let ArrayLength = ref(1);
+let tiems = ref(null);
+function getMvCommentAll(center, size, tiemsdata) {
+  ExcellentCommentAll.length = 0;
+  console.log(tiemsdata);
+  let time = Date.now();
   axios
-    .get("http://47.108.209.241:8090/comment/music", {
+    .get("http://47.108.209.241:8090/comment/new", {
       params: {
-        id: myStore.state.songurl.id,
-        offset: 20 * (ReviewPageNumber.value - 1),
-        limit: 20,
-        timestamp: timestamps,
+        timestamp: time,
+        id: center.id,
+        type: center.typeof,
+        sortType: 3,
+        pageSize: center.pageSize,
+        pageNo: size,
+        cursor: tiemsdata,
       },
     })
-    .then((response) => {
-      Object.assign(Comments, response.data.comments);
-      console.log(response.data.comments);
+    .then((res) => {
+      Object.assign(ExcellentCommentAll, res.data.data.comments);
+      jzdh.value = 0;
+      tiems.value =
+        res.data.data.comments[res.data.data.comments.length - 1].time;
+      ArrayLength.value = res.data.data.totalCount;
     })
-    .catch((error) => {
-      console.error(error);
+    .catch((err) => {
+      console.error(err);
     });
 }
-function datatime(date) {
-  const dtime = date;
-  if (date.length === 10) {
-    const [year, month, day] = date.split("-");
-    const datetime = `${year}年${month}月${day}日`;
+function getTime(center, pageSizes, size, tiemdata) {
+  jzdh.value = 1;
+  ExcellentCommentAll.length = 0;
+  console.log(pageSizes, size);
+  let time = Date.now();
+  axios
+    .get("http://47.108.209.241:8090/comment/new", {
+      params: {
+        timestamp: time,
+        id: center.id,
+        type: center.typeof,
+        sortType: 3,
+        pageSize: pageSizes,
+        pageNo: 1,
+        cursor: tiemdata,
+      },
+    })
+    .then((res) => {
+      console.log(
+        res.data.data.comments[res.data.data.comments.length - 1].time
+      );
+      getMvCommentAll(
+        Props.message,
+        size,
+        res.data.data.comments[res.data.data.comments.length - 1].time
+      );
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+// let timeArray = reactive([null]);
+// onMounted(() => {
+//   getArray(Props.message, timeArray[timeArray.length - 1]);
+// });
+// let ilength = ref(20);
+// function getArray(center, tiemdata) {
+//   let time = Date.now();
+//   axios
+//     .get("http://47.108.209.241:8090/comment/new", {
+//       params: {
+//         timestamp: time,
+//         id: center.id,
+//         type: center.typeof,
+//         sortType: 3,
+//         pageSize: 20,
+//         cursor: tiemdata,
+//       },
+//     })
+//     .then((res) => {
+//       console.log(
+//         res.data.data.comments[res.data.data.comments.length - 1].time
+//       );
+//       timeArray.push(
+//         res.data.data.comments[res.data.data.comments.length - 1].time
+//       );
+//       ilength.value += 20;
+//       if (ilength.value < res.data.data.totalCount) {
+//         getArray(Props.message, timeArray[timeArray.length - 1]);
+//       } else {
+//         console.log(timeArray);
+//       }
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//     });
+// }
+function getTimeFromTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const time = `${hours}:${minutes < 10 ? "0" + minutes : minutes}`;
 
-    return datetime;
-  } else if (date.length === 5) {
+  return time;
+}
+function formatDate(date) {
+  if (/\d{2}-\d{2}/.test(date)) {
+    // 判断是否是 "09-01" 样式
     const [month, day] = date.split("-");
-    const datetime = `${month}月${day}日`;
-
-    return datetime;
+    return `${parseInt(month)}月${parseInt(day)}日`;
+  } else if (/\d{4}-\d{2}-\d{2}/.test(date)) {
+    //判断是否是 "2023-09-01" 样式
+    const [year, month, day] = date.split("-");
+    return `${parseInt(year)}年${parseInt(month)}月${parseInt(day)}日`;
   } else {
-    return dtime;
+    return "";
   }
 }
-function time(timestamp) {
-  const date = new Date(timestamp);
-  const hours = ("0" + date.getHours()).slice(-2);
-  const minutes = ("0" + date.getMinutes()).slice(-2);
-  const formattedTime = hours + ":" + minutes;
-
-  return formattedTime;
+function getIconUrl(data) {
+  if (data.redplus !== null) {
+    return data.redplus.iconUrl;
+  } else if (data.associator !== null) {
+    return data.associator.iconUrl;
+  } else if (data.musicPackage !== null) {
+    return data.musicPackage.iconUrl;
+  }
+  return null; // 如果三个对象的 iconUrl 都为空，返回 null 或其他默认值
 }
 </script>
 
 <style scoped>
-.song-review {
-  width: 1000px;
-  height: 100px;
-}
-.song-review-left {
-  width: 700px;
-  float: left;
-}
-.song-review-right {
-  width: 250px;
-  height: 500px;
-  float: right;
-}
-.hotComments-comments {
-  width: 100%;
-  height: auto;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  margin-top: 10px;
-  overflow: hidden;
-  border-bottom: 1px solid rgb(212, 212, 212);
-}
-.hotComment-imgleft {
-  float: left;
-  width: 70px;
-}
-.hotComment-imgleft > img {
-  height: 50px;
-  width: 50px;
+.loader {
+  margin: 0 auto;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
   border-radius: 50%;
-  margin: 10px;
+  width: 40px;
+  height: 40px;
+  animation: spin 1.5s linear infinite;
 }
-.hotComment-right {
-  width: 630px;
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.review {
+  width: 100%;
+}
+.review_bt > span:nth-of-type(1) {
+  font-size: 22px;
+  font-weight: bolder;
+  margin-right: 5px;
+}
+.review_bt > span:nth-of-type(2) {
+  color: #b2b2b2;
+  font-size: 12px;
+}
+.comment_box > textarea {
+  width: 100%;
+  height: 70px;
+  resize: none;
+  outline: none;
+  border: 1px solid #b2b2b2 !important;
+  border-radius: 3px;
+}
+.comment_box_button {
+  height: 30px;
+}
+.comment_box_button > img {
+  height: 20px;
+  float: left;
+  margin: 5px;
+}
+.comment_box_button > input {
+  float: right;
+  height: 30px;
+  padding: 0 15px;
+  border-radius: 35% / 100%;
+  resize: none;
+  outline: none;
+  border: none;
+  border: 1px solid #b2b2b2 !important;
+  background-color: white;
+  font-size: 15px;
+}
+.ExcellentComment {
+}
+.ExcellentComment_center {
+  width: 100%;
+  clear: both;
+  display: inline-block;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eaeaea;
+}
+.ExcellentComment_bt {
+}
+.ExcellentComment_bt > p {
+  font-weight: bold;
+  margin: 0;
+  line-height: 30px;
+}
+.ExcellentComment_center_left {
+  width: 50px;
   float: left;
 }
-.hotComment-right p {
-  line-height: 30px;
-  margin: 0;
+.ExcellentComment_center_left > img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin: 20px 15px 0 0;
 }
-.hotComment-right p:last-child {
-  color: rgb(139, 139, 139);
+.ExcellentComment_center_right {
+  float: left;
+  width: calc(100% - 50px);
 }
-.hotComment-right span {
+.ExcellentComment_center_right_content {
+  margin-top: 15px;
+}
+.ExcellentComment_center_right_content > span {
+  line-height: 17px;
+  font-size: 12px;
+  font-weight: 300;
+}
+.ExcellentComment_center_right_content > span:nth-of-type(1) {
   color: #6b8fb8;
 }
-.hf {
-  background-color: #edebea;
-  border-radius: 5px;
-  padding: 10px;
+.ExcellentComment_center_right_content > img {
+  height: 15px;
+  display: inline-block;
+  line-height: 15px;
+  margin: -2.5px 2px;
 }
-.paging {
-  width: 700px;
-  background-color: red;
-  text-align: center;
+.ReplyComment {
+  clear: both;
+  width: calc(100% - 16px);
+  display: inline-block;
+  background-color: #f0f0f0;
+  padding: 8px;
+}
+.ReplyComment > span:nth-of-type(1) {
+  color: #6b8fb8;
+}
+.ReplyComment > span {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 300;
+  display: inline;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+.ExcellentComment_center_right_function {
+  width: 100%;
+  height: 20px;
+  padding: 0;
+  margin-top: 2px;
+}
+.ExcellentComment_center_right_function_time > p {
+  float: left;
+  font-size: 12px;
+  color: #b2b2b2;
+  line-height: 20px;
+  margin: 0;
+  font-weight: 300;
+  margin-right: 5px;
+}
+.ExcellentComment_center_right_function_time {
+  float: left;
+  padding: 0;
+}
+.ExcellentComment_center_right_function_button {
+  float: right;
+}
+.ExcellentComment_center_right_function_button > ul {
+  float: right;
+  list-style: none;
+  margin: 0;
+  height: 20px;
+  padding: 0;
+}
+.ExcellentComment_center_right_function_button > ul > li {
+  float: left;
+  height: 15px;
+  margin: 2.5px 0;
+  padding: 0 15px;
+  border-left: 1px solid #b2b2b2;
+}
+.ExcellentComment_center_right_function_button > ul > li:nth-of-type(1) {
+  border: none;
+}
+.ExcellentComment_center_right_function_button > ul > li > img {
+  float: left;
+  width: 15px;
+  height: 15px;
+  margin-right: 2px;
+}
+.ExcellentComment_center_right_function_button > ul > li > p {
+  float: left;
+  font-size: 12px;
+  line-height: 15px;
+  height: 15px;
+  margin: 0;
+  font-weight: 300;
+}
+.More_excellent_reviews {
+  clear: both;
+  width: 100%;
+  height: 100px;
   position: relative;
-  margin-top: 20px;
 }
-.paging .el-pagination {
-  margin: auto;
+.More_excellent_reviews > input {
+  border-radius: 25% / 100%;
+  margin-right: 10px;
+  background-color: white;
+  border: 1px solid #b2b2b2;
+  font-size: 14px;
+  height: 30px;
+  padding: 0 20px 0 20px;
+  font-weight: 300;
   position: absolute;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  height: 50px;
+  transform: translate(-50%, -50%);
 }
+
 ::v-deep .el-pagination > button {
   border-radius: 5px;
   border: 1px solid rgb(183, 183, 183);
@@ -242,10 +545,37 @@ function time(timestamp) {
   color: black;
   background-color: rgb(236, 236, 236);
 }
+::v-deep .el-pager li {
+  min-width: 25px !important;
+  height: 25px !important;
+  font-size: 12px;
+  font-weight: 300;
+}
+::v-deep .el-pagination > button {
+  min-width: 25px !important;
+  height: 25px !important;
+  font-size: 12px;
+  font-weight: 300;
+}
 ::v-deep .el-pager li.is-active {
   color: white;
   background-color: red;
   cursor: default;
-  font-weight: 700;
+}
+::v-deep .el-pager li:last-child {
+  display: none;
+}
+.paging {
+  clear: both;
+  width: 100%;
+  height: 100px;
+  position: relative;
+}
+.paging .el-pagination {
+  margin: auto;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

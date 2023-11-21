@@ -1,7 +1,7 @@
 <template>
   <div class="zt">
     <div class="center" v-for="item in singerMV" :key="item.id">
-      <img @click="pushMvDetails(item)" :src="item.imgurl" alt="" />
+      <img @click="pushMvDetails(item)" :src="item.imgurl16v9" alt="" />
       <p @click="pushMvDetails(item)">{{ item.name }}</p>
       <div>
         <img src="../../../../assets/image/bfq.png" alt="" /><span>{{
@@ -55,14 +55,17 @@ function jstime(item) {
 
   const formattedMinutes = minutes.toString().padStart(2, "0"); // 将分钟数补全为2位
   const formattedSeconds = seconds.toString().padStart(2, "0"); // 将秒数补全为2位
-  
+
   return `${formattedMinutes}:${formattedSeconds}`;
 }
 </script>
 
 <style scoped>
-.zt{
+.zt {
   width: 1170px;
+}
+p{
+  margin: 0;
 }
 .center {
   /* height: 165px; */
@@ -76,15 +79,15 @@ function jstime(item) {
   width: 224px;
   border-radius: 5px;
 }
-.center>p:nth-child(2) {
+.center > p:nth-of-type(1) {
   margin: 0;
-  font-size: 15px;
-  line-height: 30px;
+  font-size: 14px;
+  line-height: 25px;
   font-weight: 300;
   height: 30px;
   overflow: hidden;
 }
-.center>p:nth-child(4){
+.center > p:nth-child(4) {
   position: absolute;
   right: 5px;
   top: 105px;

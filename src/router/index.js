@@ -23,9 +23,30 @@ import MvList from '../components/主体/视频/MV组件/MvList'
 import AllMv from '../components/主体/全部MV/AllMv'
 import MvCharts from '../components/主体/MV排行榜/MvCharts'
 import MvDetails from '../components/MV详情/MvDetails'
-
-
-
+import AlbumDetails from '../components/主体/专辑详情/AlbumDetails'
+import AlbumSongList from '../components/主体/专辑详情/歌曲列表/AlbumSongList'
+import AlbumIntroduction from '../components/主体/专辑详情/专辑简介/AlbumIntroduction'
+import AlbumDetailsComponent from '../components/主体/专辑详情/评论/AlbumDetailsComponent'
+import PlaylistSongList from '../components/主体/歌单详情/歌曲列表/PlaylistSongList'
+import PlaylistReview from '../components/主体/歌单详情/歌单评论/PlaylistReview'
+import PlaylistCollection from '../components/主体/歌单详情/收藏者/PlaylistCollection'
+import ExclusiveMV from '../components/主体/独家放送/ExclusiveMV'
+import SearchList from '../components/主体/搜索列表/SearchList'
+import SearchSingle from '../components/主体/搜索列表/单曲/SearchSingle'
+import SearchPodcast from '../components/主体/搜索列表/播客/SearchPodcast'
+import SearchLyric from '../components/主体/搜索列表/歌词/SearchLyric'
+import SearchSongList from '../components/主体/搜索列表/歌单/SearchSongList'
+import SearchSinger from '../components/主体/搜索列表/歌手/SearchSinger'
+import SearchAudio from '../components/主体/搜索列表/声音/SearchAudio'
+import SearchVideo from '../components/主体/搜索列表/视频/SearchVideo'
+import SearchUser from '../components/主体/搜索列表/用户/SearchUser'
+import SearchAlbum from '../components/主体/搜索列表/专辑/SearchAlbum'
+import UsersLikeMusic from '../components/主体/我喜欢的音乐/UsersLikeMusic'
+import UsersLoveSongCollections from '../components/主体/我喜欢的音乐/收藏者/UsersLoveSongCollections'
+import UsersLoveSongLists from '../components/主体/我喜欢的音乐/歌曲列表/UsersLoveSongLists'
+import UsersLoveSongReviews from '../components/主体/我喜欢的音乐/歌单评论/UsersLoveSongReviews'
+import RecentlyPlayed from '../components/主体/最近播放/RecentlyPlayed'
+import PrivateRoaming from '../components/主体/私人漫游/PrivateRoaming'
 
 
 
@@ -100,9 +121,42 @@ const router = createRouter({
                 }
               ]
             },
+
             {
               path: 'playlist_details',
               component: PlaylistDetails,
+              children: [
+                {
+                  path: 'playlist_song_list',
+                  component: PlaylistSongList
+                },
+                {
+                  path: 'playlist_review',
+                  component: PlaylistReview
+                },
+                {
+                  path: 'playlist_collection',
+                  component: PlaylistCollection
+                }
+              ]
+            },
+            {
+              path: 'album_details',
+              component: AlbumDetails,
+              children: [
+                {
+                  path: 'album_song_list',
+                  component: AlbumSongList
+                },
+                {
+                  path: 'album_details_component',
+                  component: AlbumDetailsComponent
+                },
+                {
+                  path: 'album_introduction',
+                  component: AlbumIntroduction
+                }
+              ]
             },
             {
               path: 'singer_details',
@@ -156,6 +210,78 @@ const router = createRouter({
               path: 'mv_charts',
               component: MvCharts,
             },
+            {
+              path: 'exclusive_MV',
+              component: ExclusiveMV,
+            },
+            {
+              path: 'search_list',
+              component: SearchList,
+              children: [
+                {
+                  path: 'search_single',
+                  component: SearchSingle,
+                },
+                {
+                  path: 'search_podcast',
+                  component: SearchPodcast,
+                },
+                {
+                  path: 'search_lyric',
+                  component: SearchLyric,
+                },
+                {
+                  path: 'search_songList',
+                  component: SearchSongList,
+                },
+                {
+                  path: 'search_singer',
+                  component: SearchSinger,
+                },
+                {
+                  path: 'search_audio',
+                  component: SearchAudio,
+                },
+                {
+                  path: 'search_video',
+                  component: SearchVideo,
+                },
+                {
+                  path: 'search_user',
+                  component: SearchUser,
+                },
+                {
+                  path: 'search-album',
+                  component: SearchAlbum,
+                },
+              ]
+            },
+            {
+              path: 'users-like-music',
+              component: UsersLikeMusic,
+              children: [
+                {
+                  path: 'users-love-song-lists',
+                  component: UsersLoveSongLists
+                },
+                {
+                  path: 'users-love-song-reviews',
+                  component: UsersLoveSongReviews
+                },
+                {
+                  path: 'users-love-song-collections',
+                  component: UsersLoveSongCollections
+                }
+              ]
+            },
+            {
+              path:'recently-played',
+              component:RecentlyPlayed,
+            },
+            {
+              path:'private-roaming',
+              component:PrivateRoaming
+            }
           ]
         },
         {

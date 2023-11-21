@@ -32,13 +32,19 @@ export const useMySong = defineStore("mySong", () => {
       id: 0,
       playbacktf: false,
       playtime: ""
+    },
+    Lyrics: {
+      tf: -1,
     }
   });
 
   function setId(id) {
     state.songBackdrop.id = id;
   }
-
+  function LyricsTf() {
+    state.Lyrics.tf *= -1;
+    console.log(state.Lyrics.tf);
+  }
   function setTf() {
     state.songBackdrop.tf *= -1;
     console.log(state.songBackdrop.tf)
@@ -59,6 +65,7 @@ export const useMySong = defineStore("mySong", () => {
     setTf,
     setPlaytime,
     setPlaytf,
+    LyricsTf,
   };
 });
 

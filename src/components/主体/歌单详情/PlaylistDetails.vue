@@ -1,6 +1,6 @@
 <template>
-  <div class="zt">
-    <div class="gdxq" v-if="gdxqlb.playlist">
+  <div class="zt" v-if="gdxqlb.playlist">
+    <div class="gdxq">
       <div class="gdxq_left">
         <img :src="gdxqlb.playlist.coverImgUrl" alt="" />
       </div>
@@ -12,27 +12,40 @@
           <p>&nbsp;&nbsp;{{ gdxqlb.playlist.createTime }}创建</p>
         </div>
         <div class="gnann">
-          <input type="button" value="播放全部" />
-          <input type="button" value="收藏" />
-          <input type="button" value="分享" />
-          <input type="button" value="下载全部" />
+          <div>
+            <img src="../../../assets/image/bfq.png" alt="" />
+            <p>播出全部</p>
+          </div>
+          <div>
+            <img src="../../../assets/image/收藏.png" alt="" />
+            <p>收藏({{ formatNumber(gdxqlb.playlist.subscribedCount) }})</p>
+          </div>
+          <div>
+            <img src="../../../assets/image/分享.png" alt="" />
+            <p>分享({{ formatNumber(gdxqlb.playlist.shareCount) }})</p>
+          </div>
+          <div>
+            <img src="../../../assets/image/下载.png" alt="" />
+            <p>下载全部</p>
+          </div>
         </div>
-
+        <!-- 
         <div class="bq" v-if="gdxqlb.playlist.tags.length>0">
           <span>标题：</span>
           <span v-for="(item, index) in gdxqlb.playlist.tags" :key="index">
             {{ item }}/
           </span>
-        </div>
+        </div> -->
 
         <div class="gqbf" v-if="gdxqlb.playlist.trackCount">
           <span>歌曲：</span>
-          <span>{{ gdxqlb.playlist.trackCount }}</span>&nbsp;&nbsp;
+          <span>{{ gdxqlb.playlist.trackCount }}</span
+          >&nbsp;&nbsp;
           <span>播放：</span>
-          <span>{{ formatNumber(gdxqlb.playlist.playCount )}}</span>
+          <span>{{ formatNumber(gdxqlb.playlist.playCount) }}</span>
         </div>
 
-        <div class="jj" v-if="gdxqlb.playlist.description">
+        <div class="jj">
           <span>简介：</span>
           <span>
             {{ gdxqlb.playlist.description }}
@@ -42,43 +55,58 @@
     </div>
     <div class="gdplsc">
       <ul>
-        <li @click="tzlb(1)">歌曲列表</li>
-        <li @click="tzlb(2)">评论</li>
-        <li @click="tzlb(3)">收藏</li>
+        <li
+          :class="{ click: isRouteMatch('playlist_song_list') }"
+          @click="tzlb('/index/playlist_details/playlist_song_list')"
+        >
+          歌曲列表
+        </li>
+        <li
+          :class="{ click: isRouteMatch('playlist_review') }"
+          @click="tzlb('/index/playlist_details/playlist_review')"
+        >
+          评论(<span>{{ formatNumber(gdxqlb.playlist.commentCount) }}</span
+          >)
+        </li>
+        
+        <li
+          :class="{ click: isRouteMatch('playlist_collection') }"
+          @click="tzlb('/index/playlist_details/playlist_collection')"
+        >
+          收藏者
+        </li>
       </ul>
     </div>
-    <SongList :message="paramA" v-if="xz === 1"></SongList>
+    <router-view></router-view>
   </div>
 </template>
   
   <script setup>
-import { onMounted, reactive, ref } from "vue";
-import { useRoute } from "vue-router";
+import { onMounted, reactive } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
-import SongList from "./歌曲列表/SongList.vue";
 
 const route = useRoute();
+const router = useRouter();
 const paramA = route.query.paramA;
 let gdxqlb = reactive({});
 let trackIds = reactive([]);
-let xz = ref(0);
-
-function tzlb(a) {
-  xz.value = a;
-}
-
 onMounted(() => {
-  xz = 1;
+  getPlaylistDetail(paramA);
+  tzlb("/index/playlist_details/playlist_song_list");
+  console.log(paramA);
+});
+
+function getPlaylistDetail(ids) {
   axios
-    .get(
-      "http://47.108.209.241:8090/playlist/detail",
-      {
-        params: {
-          id: paramA,
-        },
-      }
-    )
+    .get("http://47.108.209.241:8090/playlist/detail", {
+      params: {
+        id: ids,
+      },
+    })
+
     .then((response) => {
+      console.log(response.data.playlist.commentCount);
       Object.assign(gdxqlb, response.data);
       Object.assign(trackIds, response.data.playlist.trackIds);
 
@@ -89,8 +117,7 @@ onMounted(() => {
     .catch((error) => {
       console.error(error);
     });
-});
-
+}
 function formatTimestampToDate(timestamp) {
   const date = new Date(timestamp);
   const year = date.getFullYear();
@@ -108,12 +135,30 @@ function formatNumber(number) {
     return number.toString();
   }
 }
+function tzlb(a) {
+  console.log(a);
+  router.push({
+    path: a,
+    query: {
+      id: paramA,
+    },
+  });
+}
+function isRouteMatch(routeSegment) {
+  return route.path.includes(routeSegment);
+}
 </script>
   
   <style scoped>
+.click {
+  font-size: 20px !important;
+  font-weight: bold !important;
+  border-bottom: 4px solid red;
+}
 .zt {
   width: 1170px !important;
-  padding-top: 20px;
+  margin: auto;
+  margin-top: 20px;
 }
 .gdxq {
   width: 1170px;
@@ -142,23 +187,37 @@ function formatNumber(number) {
   font-size: 22px;
   font-weight: bold;
 }
-
-input[type="button"] {
+.gnann {
+  width: 940px;
+  display: inline-block;
+  clear: both;
+}
+.gnann > div {
+  float: left;
   padding: 0 20px;
   height: 30px;
   background-color: white;
   border-radius: 20px;
   margin-right: 10px;
   border: 1px solid #b2b2b2;
-  font-size: 16px;
 }
-input[type="button"]:nth-of-type(1) {
+.gnann p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 30px;
+  float: left;
+}
+.gnann img {
+  float: left;
+  height: 20px;
+  width: 20px;
+  margin-top: 5px;
+}
+.gnann > div:nth-of-type(1) {
   background-color: red;
   border: none;
   color: white;
-}
-p {
-  font-size: 13px;
 }
 
 .gdxq_right > div {
@@ -175,35 +234,49 @@ p {
 }
 .gdplsc > ul > li {
   float: left;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 30px;
-  margin-left: 20px;
+  margin-right: 20px;
   font-weight: 300;
 }
-.yhxx{
+li > span {
+  font-size: 13px;
+}
+.yhxx {
   height: 25px;
   width: 100%;
 }
-.yhxx>img{
+.yhxx > img {
   width: 25px;
   float: left;
   border-radius: 50%;
 }
-.yhxx>p{
+.yhxx > p {
   float: left;
+  font-size: 13px;
+  font-weight: 300;
   height: 25px;
   line-height: 25px;
   margin: 0;
 }
-.yhxx>p:nth-of-type(1){
+.yhxx > p:nth-of-type(1) {
   color: #6b8fb8;
 }
-.gqbf>span{
-  font-size: 13px;
-  font-weight: 300;
+.gqbf {
+  height: 20px;
 }
-.jj>span{
+.gqbf > span {
   font-size: 13px;
   font-weight: 300;
+  line-height: 20px;
+}
+.jj {
+  height: 20px;
+  overflow: hidden;
+}
+.jj > span {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 20px;
 }
 </style>

@@ -350,6 +350,8 @@ function getIconUrl(data) {
 }
 video {
   width: 600px;
+  height: 380px;
+  background-color: black;
 }
 .author {
   clear: both;

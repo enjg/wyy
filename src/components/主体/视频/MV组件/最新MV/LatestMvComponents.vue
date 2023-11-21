@@ -12,23 +12,19 @@
         </li>
       </ul>
     </div>
-    <div class="zt_center">
-      <div class="center" v-for="(item, index) in ListArray" :key="index">
-        <img :src="item.cover" @click="pushMvDetails(item)"/>
-        <img
-          v-if="index == vids"
-          src="../../../../../assets/image/未标题-2.png"
-          alt=""
-        />
-        <p @click="pushMvDetails(item)">{{ item.name }}</p>
-        <p @click="pushUserDetails(item)">
-          {{ item.artistName }}
-        </p>
-        <div class="numberOfPlays">
-          <img src="../../../../../assets/image/bfq.png" alt="" />
-          <p>{{ formatNumber(item.playCount) }}</p>
-        </div>
-      </div>
+    <div class="center">
+      <MvBlock
+        v-for="(item, index) in ListArray"
+        :key="index"
+        class="content"
+        :message="{
+          id: item.id,
+          src: item.cover,
+          name: item.name,
+          artists: item.artists,
+          playCount: item.playCount,
+        }"
+      ></MvBlock>
     </div>
   </div>
 </template>
@@ -37,9 +33,8 @@
 import axios from "axios";
 import { onMounted, reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { useMysinger } from "@/pinia/myStore.js";
+import MvBlock from "../../../组件/MV组件/MvBlock.vue";
 
-let mySinger = useMysinger();
 let CurrentClassification = ref("内地");
 let ListArray = reactive([]);
 let SortedArray = reactive(["内地", "港台", "欧美", "日本", "韩国"]);
@@ -53,19 +48,6 @@ watch(
     getMvFirst(newValue);
   }
 );
-function pushUserDetails(center){
-  mySinger.updatedsinger(center.artists[0].id);
-  router.push("/index/singer_details");
-}
-function pushMvDetails(center) {
-  console.log(center.id);
-  router.push({
-    path: "/mv_details",
-    query: {
-      id: center.id,
-    },
-  });
-}
 function sortClick(center) {
   CurrentClassification.value = center;
 }
@@ -87,15 +69,6 @@ function getMvFirst(center) {
       console.error(err);
     });
 }
-function formatNumber(number) {
-  if (number >= 100000000) {
-    return Math.floor(number / 100000000) + "亿";
-  } else if (number >= 100000 && number < 100000000) {
-    return Math.floor(number / 10000) + "万";
-  } else {
-    return number.toString();
-  }
-}
 const router = useRouter();
 function pushAllMv() {
   router.push({
@@ -114,6 +87,9 @@ function pushAllMv() {
   background-color: rgb(247, 233, 233) !important;
   border-radius: 50% / 100% !important;
   color: red !important;
+}
+p {
+  margin: 0;
 }
 .zt {
   clear: both;
@@ -141,46 +117,20 @@ function pushAllMv() {
   color: rgb(123, 123, 123);
   padding: 5px 10px;
 }
-.zt_center {
-  clear: both;
-}
 .center {
-  width: 247.5px;
+  clear: both;
+  width: 1070px;
+  display: inline-block;
+}
+.content {
   float: left;
-  position: relative;
   margin: 10px;
+  padding: 0;
 }
-.center > img {
-  width: 100%;
-  border-radius: 2%;
-  height: 150px;
+.content:nth-of-type(4n) {
+  margin-right: 0;
 }
-.center > p {
-  margin: 5px 0;
-}
-.center > p:nth-of-type(1) {
-  font-size: 14px;
-  line-height: 20px;
-}
-.center > p:nth-of-type(2) {
-  font-size: 10px;
-  color: rgb(123, 123, 123);
-}
-.numberOfPlays {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-}
-.numberOfPlays > img {
-  width: 13px;
-  float: left;
-  margin: 1px;
-}
-.numberOfPlays > p {
-  font-size: 10px;
-  float: left;
-  margin: 0;
-  line-height: 15px;
-  color: white;
+.content:nth-of-type(4n-3) {
+  margin-left: 0;
 }
 </style>

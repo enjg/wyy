@@ -3,7 +3,13 @@
     <div class="top-bar">
       <top-bar></top-bar>
     </div>
-
+    <lyrics-barrage
+      class="lyrics"
+      v-if="mySong.state.Lyrics.tf === 1"
+    ></lyrics-barrage>
+    <div class="login">
+      <log-in v-if="myLogin.LogInTF===1"></log-in>
+    </div>
     <router-view class="center"></router-view>
   </div>
 </template>
@@ -11,6 +17,13 @@
 <script setup>
 // import { onMounted } from "vue";
 import topBar from "./顶部栏/topBar.vue";
+import LyricsBarrage from "../components/主体/组件/歌词弹幕/LyricsBarrage.vue";
+import LogIn from "../components/主体/组件/登录页面/LogIn.vue";
+import { useMySong } from "@/pinia/myStore.js";
+import { useLoginStore } from "@/pinia/myLogin.js";
+
+const myLogin = useLoginStore();
+const mySong = useMySong();
 // onMounted(() => {
 //   // 取消浏览器默认滚动条
 //   document.documentElement.style.overflow = "hidden";
@@ -31,9 +44,12 @@ import topBar from "./顶部栏/topBar.vue";
 </script>
   
   <style scoped>
+.lyrics {
+  z-index: 99999999;
+}
 .zt {
-  width: 100vw;
-  overflow: hidden;
+  /* width: 100vw;
+  overflow: hidden; */
 }
 .top-bar {
   width: 100%;
@@ -42,7 +58,7 @@ import topBar from "./顶部栏/topBar.vue";
   top: 0;
   left: 0;
   right: 0;
-  z-index: 999;
+  z-index: 2;
 }
 .center {
   width: 100vw;
@@ -53,5 +69,8 @@ import topBar from "./顶部栏/topBar.vue";
   top: 40px;
   left: 0;
   right: 0; */
+}
+.login{
+ 
 }
 </style>

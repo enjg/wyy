@@ -65,7 +65,7 @@ function tzgd(a){
 <style scoped>
 
 .zt {
-  min-width: 1070px;
+  width: 1070px;
 }
 .bt{
   font-size: 20px;

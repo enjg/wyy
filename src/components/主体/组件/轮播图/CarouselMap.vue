@@ -18,9 +18,9 @@
   <script setup>
 import { onMounted, reactive } from "vue";
 import axios from "axios";
-import { useMyStore } from "@/pinia/myStore.js";
-const myStore = useMyStore();
+import { useMyPlaylist } from "@/pinia/myPlaylist.js";
 
+const myPlaylist = useMyPlaylist();
 let carouselArray = reactive([]);
 
 onMounted(() => {
@@ -53,12 +53,8 @@ function postcarousel(id, url) {
         },
       })
       .then((response) => {
-        myStore.setMessage({
-          id: response.data.songs[0].id,
-          img: response.data.songs[0].al.picUrl,
-          name: response.data.songs[0].name,
-          songname: response.data.songs[0].ar[0].name,
-        });
+        console.log(response.data.songs[0]);
+        myPlaylist.postPlaylistArrayPush(response.data.songs[0])
       })
       .catch((error) => {
         console.error(error);

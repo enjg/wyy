@@ -54,18 +54,20 @@
       </form>
     </div>
     <div class="center">
-      <div class="content" v-for="(item, index) in AllListArray" :key="index">
-        <img :src="item.cover" @click="pushMvDetails(item)" />
-        <p @click="pushMvDetails(item)">{{ item.name }}</p>
-        <p @click="pushUserDetails(item)" >
-          {{ item.artistName }}
-        </p>
-        <div class="numberOfPlays">
-          <img src="../../../assets/image/bfq.png" alt="" />
-          <p>{{ formatNumber(item.playCount) }}</p>
-        </div>
-      </div>
+      <MvBlock
+        v-for="(item, index) in AllListArray"
+        :key="index"
+        class="content"
+        :message="{
+          id: item.id,
+          src: item.cover,
+          name: item.name,
+          artists: item.artists,
+          playCount: item.playCount,
+        }"
+      ></MvBlock>
     </div>
+
     <div class="paging">
       <el-pagination
         :page-size="96"
@@ -83,11 +85,8 @@
 import axios from "axios";
 import { onMounted, reactive, watch, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useRouter } from "vue-router";
-import { useMysinger } from "@/pinia/myStore.js";
+import MvBlock from "../组件/MV组件/MvBlock.vue";
 
-let mySinger = useMysinger();
-const router = useRouter();
 const route = useRoute();
 let sortClick = reactive({
   ReadableByteStreamController: "全部",
@@ -113,19 +112,7 @@ watch(
     deep: true,
   }
 );
-function pushUserDetails(center) {
-  mySinger.updatedsinger(center.artists[0].id);
-  router.push("/index/singer_details");
-}
-function pushMvDetails(center) {
-  console.log(center.id);
-  router.push({
-    path: "/mv_details",
-    query: {
-      id: center.id,
-    },
-  });
-}
+
 const AllCategories = reactive({
   RegionalClassification: ["全部", "内地", "港台", "欧美", "韩国", "日本"],
   TypeClassification: ["全部", "官方版", "原声", "现场版", "网易出品"],
@@ -148,7 +135,7 @@ function getAllList(center, offset) {
       },
     })
     .then((res) => {
-      console.log(offset);
+      console.log(res);
       Object.assign(AllListArray, res.data.data);
       if (offset === 0) {
         count.value = res.data.count;
@@ -158,15 +145,6 @@ function getAllList(center, offset) {
     .catch((err) => {
       console.error(err);
     });
-}
-function formatNumber(number) {
-  if (number >= 100000000) {
-    return Math.floor(number / 100000000) + "亿";
-  } else if (number >= 100000 && number < 100000000) {
-    return Math.floor(number / 10000) + "万";
-  } else {
-    return number.toString();
-  }
 }
 </script>
 
@@ -178,7 +156,7 @@ function formatNumber(number) {
 }
 .zt {
   width: 1070px;
-  position: relative;
+  margin: auto;
 }
 /* .header tr{
     background-color: red;
@@ -220,47 +198,18 @@ tr > td:nth-of-type(2) > span {
   display: inline-block;
 }
 .content {
-  width: 247.5px;
   float: left;
-  position: relative;
-  margin: 10px;
+  margin: 0 10px;
+  margin-top: 20px;
+  padding: 0;
 }
-.content > img {
-  width: 100%;
-  border-radius: 2%;
-  height: 150px;
+.content:nth-of-type(4n) {
+  margin-right: 0;
 }
-.content > p {
-  margin: 5px 0;
+.content:nth-of-type(4n-3) {
+  margin-left: 0;
 }
-.content > p:nth-of-type(1) {
-  font-size: 14px;
-  line-height: 20px;
-  height: 20px;
-  overflow: hidden;
-}
-.content > p:nth-of-type(2) {
-  font-size: 10px;
-  color: rgb(123, 123, 123);
-}
-.numberOfPlays {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-}
-.numberOfPlays > img {
-  width: 13px;
-  float: left;
-  margin: 1px;
-}
-.numberOfPlays > p {
-  font-size: 10px;
-  float: left;
-  margin: 0;
-  line-height: 15px;
-  color: white;
-  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
-}
+
 ::v-deep .el-pagination > button {
   border-radius: 5px;
   border: 1px solid rgb(183, 183, 183);
@@ -275,18 +224,27 @@ tr > td:nth-of-type(2) > span {
   color: black;
   background-color: rgb(236, 236, 236);
 }
+::v-deep .el-pager li {
+  min-width: 25px !important;
+  height: 25px !important;
+  font-size: 12px;
+  font-weight: 300;
+}
+::v-deep .el-pagination > button {
+  min-width: 25px !important;
+  height: 25px !important;
+  font-size: 12px;
+  font-weight: 300;
+}
 ::v-deep .el-pager li.is-active {
   color: white;
   background-color: red;
   cursor: default;
-  font-weight: 700;
 }
 .paging {
   width: 1070px;
-  height: 50px;
-  margin-top: 20px;
-  position: absolute;
-  bottom: 0;
+  height: 100px;
+  position: relative;
 }
 .paging .el-pagination {
   margin: auto;

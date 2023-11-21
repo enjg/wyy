@@ -2,13 +2,13 @@
   <div class="zt">
     <div class="top">
       <ul>
-        <li
-          v-for="item in sjarray"
-          :key="item.index"
-          @click="tz(item)"
-          :class="{ click: item.name == name }"
-        >
-          {{ item.name }}
+        <li v-for="item in sjarray" :key="item.index">
+          <p
+            :class="{ click: isRouteMatch(item.link) }"
+            @click="tz(item)"
+          >
+            {{ item.name }}
+          </p>
         </li>
       </ul>
     </div>
@@ -18,10 +18,11 @@
 
 <script setup>
 import { reactive, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 let name = ref("个性推荐");
 const router = useRouter();
+const route = useRoute();
 const sjarray = reactive([
   {
     index: 1,
@@ -58,6 +59,9 @@ function tz(a) {
   router.push(a.link);
   name.value = a.name;
 }
+function isRouteMatch(routeSegment) {
+  return route.path.includes(routeSegment);
+}
 </script>
 
 <style scoped>
@@ -68,11 +72,17 @@ function tz(a) {
 }
 .top {
   height: 50px;
-  width: 1070px;
-  /* position: fixed;
-  left: calc(50% - (0.5 * (100vw - 100%) + 400px));
-  top: calc(100vh - 00px);
-  z-index: 99999999; */
+  width: 100%;
+  background-color: white;
+  position: fixed;
+  left: 201px;
+  top: 50px;
+  z-index: 2;
+  padding-left: 20px;
+}
+.top p {
+  margin: 0;
+  line-height: 40px;
 }
 .click {
   font-weight: bold !important;
@@ -89,11 +99,16 @@ function tz(a) {
 .top > ul > li {
   float: left;
   font-size: 16px;
-  line-height: 50px;
   margin-right: 20px;
   font-weight: 300;
 }
 .router-view-class {
-  margin-top: 20px;
+  display: inline-block;
+  width: auto;
+  margin-top: 50px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-bottom: 70px;
 }
 </style>

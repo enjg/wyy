@@ -104,6 +104,7 @@ function pushAllMv() {
   }
   .center > img {
     width: 100%;
+    height: 145px;
     border-radius: 2%;
     height: 150px;
   }

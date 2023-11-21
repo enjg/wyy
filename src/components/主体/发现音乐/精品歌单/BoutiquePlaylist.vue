@@ -65,6 +65,8 @@ function routerPlaylistDetails(id) {
 .zt>p{
   font-size: 22px;
   font-weight: bold;
+  line-height: 50px;
+  margin: 0;
 }
 .center {
   width: 380px;

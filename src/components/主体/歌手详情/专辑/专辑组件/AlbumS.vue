@@ -1,12 +1,12 @@
 <template>
   <div class="zt">
     <div class="center-left">
-      <img :src="Props.message.blurPicUrl" alt="" />
+      <img @click="tzgd(Props.message.id)" :src="Props.message.blurPicUrl" alt="" />
       <img :src="Props.message.artist.picUrl" alt="" />
       <p>{{ formatDate(Props.message.publishTime) }}</p>
     </div>
     <div class="center-right" ref="centerrightDiv">
-      <h2>{{ Props.message.name }}</h2>
+      <p>{{ Props.message.name }}</p>
       <form action="">
         <tbody>
           <tr
@@ -45,7 +45,9 @@
 import { defineProps, onMounted, reactive, ref } from "vue";
 import axios from "axios";
 import { useMyStore } from "@/pinia/myStore.js";
+import { useRouter } from "vue-router";
 
+const router=useRouter();
 const myStore = useMyStore();
 const Props = defineProps({
   message: Object,
@@ -107,6 +109,10 @@ function songplay(center) {
   };
   myStore.setMessage(songobj);
 }
+function tzgd(a){
+    console.log(a);
+    router.push({ path: '/index/album_details', query: { paramA: a } });
+}
 </script>
 
 <style scoped>
@@ -137,36 +143,39 @@ td > p {
 .center-left {
   position: relative;
   float: left;
-  width: 240px;
 }
 .center-left p {
   margin: 0;
   color: rgb(97, 97, 97);
 }
 .center-right {
-  width: 930px;
+  width: calc(100% - 205px);
   float: left;
+  margin-left: 60px;
 }
 .center-left img:nth-child(1) {
-  height: 180px;
-  width: 180px;
+  height: 145px;
+  width: 145px;
   border-radius: 5px;
   position: absolute;
   z-index: 9;
 }
 .center-left img:nth-child(2) {
-  height: 180px;
-  width: 180px;
+  height: 145px;
+  width: 145px;
   border-radius: 100%;
   position: relative;
-  left: 25px;
+  left: 20px;
 }
-.center-right h2 {
-  margin: 5px 0px;
+.center-right > p {
+  margin: 0px;
+  font-size: 18px;
+  font-weight: bold;
 }
 form {
   max-height: 350px;
   overflow: hidden;
+  margin-top: 10px;
 }
 td {
   border: none;
@@ -200,7 +209,7 @@ tr td:nth-child(3) {
   width: 30px;
 }
 tr td:nth-child(4) {
-  width: 700px;
+  width: 735px;
   text-align: left;
   color: black;
   padding-left: 10px;

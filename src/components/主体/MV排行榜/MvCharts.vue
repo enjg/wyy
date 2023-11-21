@@ -190,7 +190,7 @@ function pushMvDetails(center) {
 .zt {
   clear: both;
   width: 1070px;
-  display: inline-block;
+  margin: auto;
 }
 .header {
   width: 1070px;

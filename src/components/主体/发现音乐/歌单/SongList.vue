@@ -1,6 +1,7 @@
 <template>
   <div class="song-list-zt">
     <div class="jpgd" v-if="playlists.length" @click="RouterBoutiquePlaylist()">
+      <img :src="playlists[0].coverImgUrl" alt="" />
       <div class="jpgd_left">
         <img :src="playlists[0].coverImgUrl" alt="" />
       </div>
@@ -15,7 +16,7 @@
     <div class="gdxz">
       <input
         type="button"
-        :value="sortClick"
+        :value="`${sortClick} >`"
         @click="playlistcategorybutton()"
       />
       <ul>
@@ -44,14 +45,15 @@
           <p>{{ value }}</p>
         </div>
         <div class="center-songlist">
-          <p
+          <div
             v-for="(item, keytwo) in filteredSub(key)"
             :key="keytwo"
-            :class="{ click: item.name === sortClick }"
             @click="postsortClickObj(item.name)"
           >
-            {{ item.name }}
-          </p>
+            <span :class="{ click: item.name === sortClick }">
+              {{ item.name }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -69,7 +71,7 @@ let sub = reactive([]);
 const router = useRouter();
 let categories = reactive([]);
 let idx = ref();
-let playlists=reactive([])
+let playlists = reactive([]);
 let imgage = reactive([
   { url: require("@/assets/image/17-地球.png") },
   { url: require("@/assets/image/钢琴.png") },
@@ -101,7 +103,11 @@ function bqtgg(a) {
     })
     .then((response) => {
       // 在这里处理返回的数据
-      Object.assign(playlists, response.data.playlists);
+      if (response.data.playlists.length != 0) {
+        Object.assign(playlists, response.data.playlists);
+      } else {
+        playlists.length = 0;
+      }
       idx.value = a;
       console.log(a);
     })
@@ -169,20 +175,21 @@ function RouterBoutiquePlaylist() {
 }
 .song-list-zt {
   width: 1070px;
-  position: relative;
 }
 .jpgd {
   height: 170px;
   border-radius: 10px;
-  background: linear-gradient(
-    to right,
-    #747d74,
-    #493b2e,
-    #695a46,
-    #625242,
-    #92978b
-  );
+  width: 100%;
+  position: relative;
+  overflow: hidden;
   padding: 0;
+}
+.jpgd > img {
+  width: 100%;
+  filter: blur(50px) brightness(0.7);
+  position: absolute;
+  top: -435px;
+  z-index: -1;
 }
 .jpgd_left {
   float: left;
@@ -229,9 +236,10 @@ function RouterBoutiquePlaylist() {
 .gdxz > input {
   width: 100px;
   height: 30px;
-  margin-top: 15px;
+  margin-top: 14px;
+  font-weight: 300;
   border-radius: 25px;
-  border: 1px solid #b2b2b2;
+  border: 1px solid #d8d8d8;
   background-color: white;
   font-size: 18px;
   font-size: 15px;
@@ -254,10 +262,10 @@ function RouterBoutiquePlaylist() {
   padding: 2px 10px;
 }
 .playlist-selection {
-  width: 780px;
-  height: 810px;
+  width: 720px;
+  height: 720px;
   position: absolute;
-  top: 290px;
+  top: 230px;
   left: 0;
   z-index: 9999;
   background-color: white;
@@ -265,52 +273,60 @@ function RouterBoutiquePlaylist() {
   box-shadow: 0 0 10px rgba(195, 195, 195, 0.5);
 }
 .fullplaylist {
-  height: 80px;
-  border-bottom: 1px solid #b2b2b2;
+  height: 60px;
+  border-bottom: 1px solid #e6e6e6;
 }
 .fullplaylist > span {
-  line-height: 80px;
+  line-height: 60px;
   padding: 5px 10px;
   margin: 0;
   width: auto;
-  font-size: 22px;
-  margin-left: 30px;
+  font-size: 15px;
+  margin-left: 20px;
   font-weight: 300;
 }
 .center {
-  margin-top: 20px;
-  width: 780px;
+  margin-top: 10px;
+  width: 100%;
   display: inline-block;
   clear: both;
+  overflow: hidden;
 }
 .center-sort {
   float: left;
-  width: 150px;
+  width: 100px;
   text-align: center;
   font-size: 14px;
   position: relative;
 }
 .center-sort > img {
   position: absolute;
-  width: 30px;
-  height: 30px;
-  top: 10px;
+  width: 25px;
+  height: 25px;
+  top: 8px;
   left: 20px;
 }
 .center-sort > p {
   color: rgb(153, 153, 153);
-  font-size: 14px;
+  font-size: 13px;
+  margin: 0;
+  margin-top: 10px;
+  display: inline-block;
+  margin-left: 22px;
 }
 .center-songlist {
   float: left;
-  width: 630px;
+  width: calc(100% - 100px);
 }
 
-.center-songlist p {
+.center-songlist > div {
   float: left;
-  width: 75px;
-  margin: 15px;
+  width: 80px;
+  margin: 10px 10px;
   font-weight: 300;
-  font-size: 14px;
+  font-size: 13px;
+}
+.center-songlist > div > span {
+  padding: 5px 10px;
 }
 </style>

@@ -52,16 +52,11 @@ let videoDetails = reactive({
 });
 let categoryList = reactive([]);
 function getcategorylist() {
-  let time = Date.now();
   axios
-    .get("http://47.108.209.241:8090/video/category/list", {
-      params: {
-        timestamp: time,
-      },
-    })
+    .get("http://47.108.209.241:8090/video/category/list")
     .then((res) => {
       Object.assign(categoryList, res.data.data);
-      console.log(res.data.data);
+      console.log('分类',res.data);
     })
     .catch((err) => {
       console.error(err);
@@ -103,13 +98,14 @@ function getSortList() {
   width: 100%;
 }
 .top > input {
-  width: 130px;
-  height: 40px;
+  width: 100px;
+  height: 30px;
   margin-top: 15px;
   border-radius: 25px;
-  border: 1px solid rgb(138, 138, 138);
+  border: 1px solid rgb(190, 190, 190);
   background-color: white;
-  font-size: 18px;
+  font-size: 15px;
+  font-weight: 300;
 }
 .top > input:hover {
   background-color: rgb(228, 228, 228);
@@ -128,7 +124,7 @@ function getSortList() {
   padding: 0;
 }
 .top span {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 40px;
   padding: 2px 10px;
 }

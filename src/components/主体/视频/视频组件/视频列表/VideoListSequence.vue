@@ -108,6 +108,7 @@ function mouseLeave(a, b) {
 }
 
 function gettimelineAllList() {
+  List.length=0;
   let time = Date.now();
   axios
     .get("http://47.108.209.241:8090/video/timeline/all", {
